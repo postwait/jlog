@@ -44,7 +44,14 @@ int main(void){sem_t s;return (0 != sem_init(&s,0,0));}
 	]
 )
 
-AC_CHECK_LIB(lz4, LZ4_compress_default, , )
+AC_CHECK_LIB(lz4, LZ4_compress_default, [AC_DEFINE(HAVE_LZ4_COMPRESS_DEFAULT)],)
+
+if test "x$ac_cv_lib_lz4_LZ4_compress_default" != "xyes" ; then
+	AC_CHECK_LIB(lz4, LZ4_compress_limitedOutput, ,)
+	if test "x$ac_cv_lib_lz4_LZ4_compress_limitedOutput" == "xyes" ; then
+		AC_DEFINE(HAVE_LZ4_COMPRESS_LIMITEDOUTPUT)
+	fi
+fi
 AC_FUNC_STRFTIME
 AC_CHECK_FUNC(pwritev, [AC_DEFINE(HAVE_PWRITEV)], )
 

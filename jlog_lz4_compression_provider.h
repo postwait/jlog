@@ -48,7 +48,13 @@ jlog_lz4_compression_provider_compress_bound(const int source_size)
 static inline int 
 jlog_lz4_compression_provider_compress(const char *source, char *dest, int source_size, int max_dest_size) 
 {
+#if defined(HAVE_LZ4_COMPRESS_DEFAULT)
   return LZ4_compress_default(source, dest, source_size, max_dest_size);
+#elif defined(HAVE_LZ4_COMPRESS_LIMITEDOUTPUT)
+  return LZ4_compress_limitedOutput(source, dest, source_size, max_dest_size);
+#else
+#error LZ4 API unknown
+#endif
 }
 
 static inline int 
